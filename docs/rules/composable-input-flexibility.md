@@ -34,6 +34,31 @@ function useCounter(value: Ref<number>) {
 
 </eslint-code-block>
 
+## :white_check_mark: Written-back parameters are exempt
+
+A `MaybeRefOrGetter<T>` may be a plain getter, which is **not writable**. So a parameter
+that the composable writes back to must stay a `Ref<T>`, and the rule does not flag it.
+A parameter is considered written when it is reassigned via `set(param, …)`,
+`param.value = …` (including compound assignments), or an update expression such as
+`param.value++`.
+
+<!-- eslint-skip -->
+
+```ts
+/* eslint @rotki/composable-input-flexibility: "error" */
+
+// ✓ GOOD — `state` is written back, so a Ref is required and it is not flagged
+function useToggle(state: Ref<boolean>) {
+  function toggle() {
+    set(state, !get(state));
+  }
+  return { toggle };
+}
+```
+
+This means no inline `eslint-disable` is needed for writable parameters: only genuinely
+read-only `Ref<T>` parameters — where a getter would work just as well — are reported.
+
 ## :wrench: Options
 
 ```json

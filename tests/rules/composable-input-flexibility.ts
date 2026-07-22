@@ -40,6 +40,64 @@ tester.run('composable-input-flexibility', rule, {
         }
       `,
     },
+    {
+      // Written back via set() — must stay a writable Ref
+      filename: 'test.ts',
+      code: `
+        function useToggle(state: Ref<boolean>) {
+          function toggle() {
+            set(state, !get(state));
+          }
+          return { toggle };
+        }
+      `,
+    },
+    {
+      // Written back via .value assignment — must stay a writable Ref
+      filename: 'test.ts',
+      code: `
+        function useCounter(count: Ref<number>) {
+          function reset() {
+            count.value = 0;
+          }
+          return { reset };
+        }
+      `,
+    },
+    {
+      // Written back via update expression — must stay a writable Ref
+      filename: 'test.ts',
+      code: `
+        function useCounter(count: Ref<number>) {
+          function increment() {
+            count.value++;
+          }
+          return { increment };
+        }
+      `,
+    },
+    {
+      // Written back via compound assignment — must stay a writable Ref
+      filename: 'test.ts',
+      code: `
+        function useCounter(count: Ref<number>) {
+          function add(n: number) {
+            count.value += n;
+          }
+          return { add };
+        }
+      `,
+    },
+    {
+      // Arrow composable, written back via set()
+      filename: 'test.ts',
+      code: `
+        const useThing = (writable: Ref<number>) => {
+          set(writable, 1);
+          return { writable };
+        };
+      `,
+    },
   ],
   invalid: [
     {
@@ -79,6 +137,30 @@ tester.run('composable-input-flexibility', rule, {
         const useLabel = (text: MaybeRefOrGetter<string>) => {
           return { label: text };
         };
+      `,
+          },
+        ],
+      }],
+    },
+    {
+      // Mixed params: read-only `label` is flagged, written-back `count` is exempt
+      filename: 'test.ts',
+      code: `
+        function useThing(label: Ref<string>, count: Ref<number>) {
+          set(count, 1);
+          return { label, count };
+        }
+      `,
+      errors: [{
+        messageId: 'preferMaybeRefOrGetter',
+        suggestions: [
+          {
+            messageId: 'suggestMaybeRefOrGetter',
+            output: `
+        function useThing(label: MaybeRefOrGetter<string>, count: Ref<number>) {
+          set(count, 1);
+          return { label, count };
+        }
       `,
           },
         ],
