@@ -15,6 +15,7 @@ import noDeprecatedProps from './rules/no-deprecated-props';
 import noDotTsImport from './rules/no-dot-ts-imports';
 import noLegacyLibraryImport from './rules/no-legacy-library-import';
 import noRedundantFlexRow from './rules/no-redundant-flex-row';
+import noSharedPinia from './rules/no-shared-pinia';
 import noUnusedI18nKeys from './rules/no-unused-i18n-keys/index';
 import requireJsdocOnComposableOptions from './rules/require-jsdoc-on-composable-options';
 
@@ -39,6 +40,7 @@ const plugin = {
     'no-dot-ts-imports': noDotTsImport,
     'no-legacy-library-import': noLegacyLibraryImport,
     'no-redundant-flex-row': noRedundantFlexRow,
+    'no-shared-pinia': noSharedPinia,
     'no-unused-i18n-keys': noUnusedI18nKeys,
     'require-jsdoc-on-composable-options': requireJsdocOnComposableOptions,
   },
