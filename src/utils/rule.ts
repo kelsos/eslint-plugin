@@ -54,15 +54,15 @@ function createRule<
   meta,
 }: Readonly<RuleWithMeta<TOptions, TMessageIds>>): RuleModule<TMessageIds, TOptions> {
   return {
-    create: ((
+    create: (
       context: Readonly<RuleContext<TMessageIds, TOptions>>,
     ): RuleListener => {
       const optionsWithDefault = context.options.map((options, index) => ({
         ...defaultOptions[index] || {},
         ...options || {},
       })) as unknown as TOptions;
-      return create(context as any, optionsWithDefault);
-    }) as any,
+      return create(context, optionsWithDefault);
+    },
     defaultOptions,
     meta: meta as any,
   };
